@@ -1,3 +1,5 @@
+# Disclaimer
+This is a project for fun.
 # Idea
 Create a simple ToDo API, supporting HTTP API and MCP.
 # Desired Features
