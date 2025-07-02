@@ -24,7 +24,7 @@ class Task(BaseModel):
      - optional deadline
      - a list of working intervals to calculate the time for working on a task.
     """
-    id_: uuid.UUID  = Field(default_factory=uuid.uuid4, alias="id")
+    id_: uuid.UUID  = Field(default_factory=uuid.uuid4)
     name: str
     is_complete: bool = False
     description: str | None = None
@@ -36,7 +36,7 @@ class User(BaseModel):
     """
     System's user who has an id and the name.
     """
-    id_: uuid.UUID = Field(default_factory=uuid.uuid4, alias="id")
+    id_: uuid.UUID = Field(default_factory=uuid.uuid4)
     name: str
     tasks: list[Task] = Field(default_factory=list)
 

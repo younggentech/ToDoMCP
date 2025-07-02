@@ -16,14 +16,19 @@ class UserService:
     def __init__(self, user_repository: UserRepository):
         self.user_repository = user_repository
 
-    def create_user(self, name) -> User:
+    def create_user(self, name, id_: uuid.UUID | None = None) -> User:
         """Register a user and store it in repository."""
         user = User(name=name, tasks=[])
+        if id_ is not None:
+            if self.get_user(id_) is not None:
+                raise InvalidParameter(f"User with id {id_} already exists")
+            user.id_ = id_
+
         try:
             self.user_repository.save(user)
         except ExternalServiceException as e:
             # todo setup logging
-            raise from e
+            raise e
         return user
 
     def get_user(self, id_: uuid.UUID) -> User | None:
@@ -37,7 +42,7 @@ class UserService:
             return
         return user.tasks
 
-    def create_task(self, user_id: uuid.UUID, task_data: dict):
+    def create_task(self, user_id: uuid.UUID, task_data: dict) -> uuid.UUID:
         """Add a new task for a user"""
         user = self.get_user(user_id)
         if user is None:
@@ -45,6 +50,7 @@ class UserService:
         task = Task(**task_data)
         user.add_task(task)
         self.user_repository.save(user)
+        return task.id_
 
     def modify_user_task(self, user_id: uuid.UUID, task_id: uuid.UUID, updates: dict):
         """Update user's task"""
